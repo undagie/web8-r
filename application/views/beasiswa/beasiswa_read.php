@@ -22,11 +22,14 @@
                     $this->load->view('template/notifikasi');
                     ?>
                  <div class="card">
-                     <h5 class="card-header">
+                     <div class="card-header">
                          Data Beasiswa
-                         <a href="<?= base_url('beasiswa/tambah') ?>" class="btn btn-rounded btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Tambah Data</a>
-                         <a href="<?= base_url('beasiswa/cetak') ?>" target="blank" class="btn btn-rounded btn-sm btn-info mr-1 float-right"><i class="fas fa-print"></i> Cetak Data</a>
-                     </h5>
+                         <!-- Pembatasan Tombol Cetak dan Tambah pada akun peran USER -->
+                         <?php if ($this->session->userdata('peran') != 'USER') : ?>
+                             <a href="<?= base_url('beasiswa/tambah') ?>" class="btn btn-rounded btn-primary btn-sm float-right"><i class="fas fa-plus"></i> Tambah Data</a>
+                             <a href="<?= base_url('beasiswa/cetak') ?>" target="blank" class="btn btn-rounded btn-sm btn-info mr-1 float-right"><i class="fas fa-print"></i> Cetak Data</a>
+                         <?php endif ?>
+                     </div>
                      <div class="card-body">
                          <table class="table table-bordered" id="mytabel">
                              <thead>
@@ -37,29 +40,32 @@
                                      <th>Tanggal Selesai</th>
                                      <th>Nama Jenis Beasiswa</th>
                                      <th>Keterangan</th>
-                                     <th>Aksi</th>
+                                     <!-- Pembatasan kolom Aksi pada peran USER -->
+                                     <?php if ($this->session->userdata('peran') != 'USER') : ?>
+                                         <th>Aksi</th>
+                                     <?php endif; ?>
                                  </tr>
                              </thead>
                              <tbody>
                                  <?php
                                     $no = 1;
                                     foreach ($beasiswa as $a) {
+                                        echo "<tr>
+                                         <td>" . $no++ . "</td>
+                                         <td>" . $a->nama_beasiswa . "</td>
+                                         <td>" . $a->tanggal_mulai . "</td>
+                                         <td>" . $a->tanggal_selesai . "</td>
+                                         <td>" . $a->nama_jenis . "</td>
+                                         <td>" . $a->keterangan . "</td>";
+                                        if ($this->session->userdata('peran') != 'USER') :
+                                            echo "<td>
+                                                 <a href=" . base_url('beasiswa/ubah/' . $a->id) . " class='btn btn-info btn-sm'><i class='fas fa-edit'></i> Ubah </a>
+                                                 <a href=" . base_url('beasiswa/hapus/' . $a->id) . " onclick='return confirm('Yakin, ingin menghapus data ini?')' class='btn btn-danger btn-sm'><i class='fas fa-trash'></i> Hapus</a>
+                                        </td>";
+                                        endif;
+                                        echo "</tr>";
+                                    }
                                     ?>
-                                     <tr>
-                                         <td><?= $no++; ?></td>
-                                         <td><?= $a->nama_beasiswa; ?></td>
-                                         <td><?= $a->tanggal_mulai; ?></td>
-                                         <td><?= $a->tanggal_selesai; ?></td>
-                                         <td><?= $a->nama_jenis; ?></td>
-                                         <td><?= $a->keterangan; ?></td>
-                                         <td>
-                                             <div class="btn-group">
-                                                 <a href="<?= base_url('beasiswa/ubah/' . $a->id); ?>" class="btn btn-success btn-sm"><i class="fas fa-edit"></i> Ubah </a>
-                                                 <a href="<?= base_url('beasiswa/hapus/' . $a->id); ?>" onclick="return confirm('Yakin, ingin menghapus data ini?')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</a>
-                                             </div>
-                                         </td>
-                                     </tr>
-                                 <?php  } ?>
                              </tbody>
                          </table>
                      </div>
